@@ -10,3 +10,12 @@
 *.lai
 *.la
 *.a
+/.vs
+/debug
+/release
+/QtFFmpegWrapper.sln
+/QtFFmpegWrapper.vcxproj
+/QtFFmpegWrapper.vcxproj.filters
+/QtFFmpegWrapper.vcxproj.user
+/vc140.pdb
+/QtFFmpegWrapper.sdf
