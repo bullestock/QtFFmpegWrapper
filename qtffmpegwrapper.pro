@@ -1,3 +1,4 @@
+TARGET = qtffmpegwrapper
 TEMPLATE = lib
 CONFIG += staticlib
 
@@ -10,6 +11,7 @@ FFMPEG_LIBRARY_PATH = c:/lang/ffmpeg-2.3.3-x64/bin
 
 # Set FFMPEG_INCLUDE_PATH to point to the directory containing the FFMPEG includes (if needed - typically for Windows)
 FFMPEG_INCLUDE_PATH = c:/lang/ffmpeg-2.3.3-x64/include
+
 
 # ##############################################################################
 # Do not modify: FFMPEG default settings
@@ -32,6 +34,18 @@ INCLUDEPATH += $$FFMPEG_INCLUDE_PATH
 
 # Requied for some C99 defines
 DEFINES += __STDC_CONSTANT_MACROS
+
+isEmpty(PREFIX) {
+    PREFIX = /usr/local
+}
+
+library.files = libqtffmpegwrapper.a
+library.path = $$PREFIX/lib
+
+headers.files = $$HEADERS
+headers.path = $$PREFIX/include
+
+INSTALLS += library headers
 
 # ##############################################################################
 # FFMPEG: END OF CONFIGURATION
