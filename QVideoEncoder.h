@@ -50,9 +50,10 @@ class QVideoEncoder
 
       QString fileName;
 
+      QString logBuffer;
+
       unsigned getWidth();
       unsigned getHeight();
-      bool isSizeValid();
 
       void initVars();
       bool initCodec();
@@ -76,13 +77,18 @@ class QVideoEncoder
       QVideoEncoder();
       virtual ~QVideoEncoder();
 
-      bool createFile(QString filename,unsigned width,unsigned height,unsigned bitrate,unsigned gop,unsigned fps=25);
+      bool createFile(QString filename, unsigned width, unsigned height, unsigned bitrate, unsigned gop, unsigned fps=25,
+                      QString format = "",
+                      QString* errorMessage = nullptr);
       virtual bool close();
 
       virtual int encodeImage(const QImage &);
       virtual int encodeImagePts(const QImage &,unsigned pts);
       virtual bool isOk();  
 
+      void log(const char*);
+
+      QString log() const;
 };
 
 
