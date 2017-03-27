@@ -43,7 +43,7 @@ library.files = libqtffmpegwrapper.a
 library.path = $$PREFIX/lib
 
 headers.files = $$HEADERS
-headers.path = $$PREFIX/include
+headers.path = $$PREFIX/include/QtFFmpegWrapper
 
 INSTALLS += library headers
 
