@@ -19,7 +19,7 @@ FFMPEG_INCLUDE_PATH = c:/lang/ffmpeg-2.3.3-x64/include
 
 # Sources for QT wrapper
 SOURCES += QVideoEncoder.cpp QVideoDecoder.cpp
-HEADERS += QVideoEncoder.h QVideoDecoder.h
+HEADERS += QVideoEncoder.h QVideoDecoder.h ffmpeg.h
 
 # Set list of required FFmpeg libraries
 LIBS += -lavutil \
