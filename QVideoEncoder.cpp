@@ -56,7 +56,7 @@ QVideoEncoder::~QVideoEncoder()
    close();
 }
 
-bool QVideoEncoder::createFile(QString fileName,unsigned width,unsigned height,unsigned bitrate,unsigned gop,unsigned fps, QString format,
+bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height, unsigned bitrate, unsigned gop, unsigned fps, QString format,
                                QString* errorMessage)
 {
    logBuffer.clear();
@@ -64,10 +64,10 @@ bool QVideoEncoder::createFile(QString fileName,unsigned width,unsigned height,u
    // If we had an open video, close it.
    close();
 
-   Width=width;
-   Height=height;
-   Gop=gop;
-   Bitrate=bitrate;
+   Width = width;
+   Height = height;
+   Gop = gop;
+   Bitrate = bitrate;
 
    pOutputFormat = ffmpeg::av_guess_format(format.isEmpty() ? NULL : format.toStdString().c_str(), fileName.toStdString().c_str(), NULL);
    if (!pOutputFormat) {
@@ -75,7 +75,7 @@ bool QVideoEncoder::createFile(QString fileName,unsigned width,unsigned height,u
       pOutputFormat = ffmpeg::av_guess_format("mpeg", NULL, NULL);
    }
 
-   pFormatCtx=ffmpeg::avformat_alloc_context();
+   pFormatCtx = ffmpeg::avformat_alloc_context();
    if(!pFormatCtx)
    {
       if (errorMessage)
@@ -125,6 +125,16 @@ bool QVideoEncoder::createFile(QString fileName,unsigned width,unsigned height,u
    pCodecCtx->pix_fmt = ffmpeg::PIX_FMT_YUV420P;
    pCodecCtx->thread_count = 10;
 
+   if (pCodecCtx->codec_id == AV_CODEC_ID_H264)
+   {
+      // Set H.264 defaults
+      pCodecCtx->me_range = 16;
+      pCodecCtx->max_qdiff = 4;
+      pCodecCtx->qmin = 10;
+      pCodecCtx->qmax = 51;
+      pCodecCtx->qcompress = 0.6;
+   }
+   
    // some formats want stream headers to be separate
    if(pFormatCtx->oformat->flags & AVFMT_GLOBALHEADER)
       pCodecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
