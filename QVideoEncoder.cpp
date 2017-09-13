@@ -125,14 +125,14 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
    pCodecCtx->pix_fmt = ffmpeg::PIX_FMT_YUV420P;
    pCodecCtx->thread_count = 10;
 
-   if (pCodecCtx->codec_id == AV_CODEC_ID_H264)
+   if (pCodecCtx->codec_id == ffmpeg::AV_CODEC_ID_H264)
    {
       // Set H.264 defaults
       pCodecCtx->me_range = 16;
       pCodecCtx->max_qdiff = 4;
       pCodecCtx->qmin = 10;
       pCodecCtx->qmax = 51;
-      pCodecCtx->qcompress = 0.6;
+      pCodecCtx->qcompress = (float) 0.6;
    }
    
    // some formats want stream headers to be separate
