@@ -169,11 +169,11 @@ bool QVideoDecoder::openFile(QString filename)
        return false;
 
    // Determine required buffer size and allocate buffer
-   numBytes=ffmpeg::avpicture_get_size(ffmpeg::PIX_FMT_RGB24, pCodecCtx->width,pCodecCtx->height);
+   numBytes = ffmpeg::avpicture_get_size(ffmpeg::AV_PIX_FMT_RGB24, pCodecCtx->width, pCodecCtx->height);
    buffer=new uint8_t[numBytes];
 
    // Assign appropriate parts of buffer to image planes in pFrameRGB
-   avpicture_fill((ffmpeg::AVPicture *)pFrameRGB, buffer, ffmpeg::PIX_FMT_RGB24,
+   avpicture_fill((ffmpeg::AVPicture *) pFrameRGB, buffer, ffmpeg::AV_PIX_FMT_RGB24,
        pCodecCtx->width, pCodecCtx->height);
 
    ok=true;
@@ -286,7 +286,7 @@ bool QVideoDecoder::decodeSeekFrame(int after)
                // Convert the image format (init the context the first time)
                int w = pCodecCtx->width;
                int h = pCodecCtx->height;
-               img_convert_ctx = ffmpeg::sws_getCachedContext(img_convert_ctx,w, h, pCodecCtx->pix_fmt, w, h, ffmpeg::PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+               img_convert_ctx = ffmpeg::sws_getCachedContext(img_convert_ctx,w, h, pCodecCtx->pix_fmt, w, h, ffmpeg::AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
 
                if(img_convert_ctx == NULL)
                {

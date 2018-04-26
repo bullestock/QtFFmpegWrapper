@@ -122,7 +122,7 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
    pCodecCtx->time_base.num = 1;
    //
    pCodecCtx->gop_size = Gop;
-   pCodecCtx->pix_fmt = ffmpeg::PIX_FMT_YUV420P;
+   pCodecCtx->pix_fmt = ffmpeg::AV_PIX_FMT_YUV420P;
    pCodecCtx->thread_count = 10;
 
    if (pCodecCtx->codec_id == ffmpeg::AV_CODEC_ID_H264)
@@ -570,8 +570,9 @@ bool QVideoEncoder::convertImage_sws(const QImage &img)
       return false;
    }
 
-   img_convert_ctx = ffmpeg::sws_getCachedContext(img_convert_ctx,getWidth(),getHeight(),ffmpeg::PIX_FMT_BGRA,getWidth(),getHeight(),ffmpeg::PIX_FMT_YUV420P,SWS_BICUBIC, NULL, NULL, NULL);
-   //img_convert_ctx = ffmpeg::sws_getCachedContext(img_convert_ctx,getWidth(),getHeight(),ffmpeg::PIX_FMT_BGRA,getWidth(),getHeight(),ffmpeg::PIX_FMT_YUV420P,SWS_FAST_BILINEAR, NULL, NULL, NULL);
+   img_convert_ctx = ffmpeg::sws_getCachedContext(img_convert_ctx, getWidth(), getHeight(),
+						  ffmpeg::AV_PIX_FMT_BGRA, getWidth(), getHeight(),
+						  ffmpeg::AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
    if (img_convert_ctx == NULL)
    {
       printf("Cannot initialize the conversion context\n");
