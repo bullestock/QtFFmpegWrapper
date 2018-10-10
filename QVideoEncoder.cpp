@@ -38,6 +38,13 @@ static void av_log_callback(void*, int, const char* format, va_list va)
    }
 }
 
+static void private_log_callback(const char* format, ...)
+{
+   va_list va;
+   va_start(va, format);
+   av_log_callback(nullptr, 0, format, va);
+}
+
 /******************************************************************************
 * PUBLIC   PUBLIC   PUBLIC   PUBLIC   PUBLIC   PUBLIC   PUBLIC   PUBLIC   PUBLIC
 ******************************************************************************/
@@ -45,9 +52,9 @@ static void av_log_callback(void*, int, const char* format, va_list va)
 
 QVideoEncoder::QVideoEncoder()
 {
+   av_log_callback_context = this;
    initVars();
    initCodec();
-   av_log_callback_context = this;
    ffmpeg::av_log_set_callback(av_log_callback);
 }
 
@@ -314,9 +321,10 @@ bool QVideoEncoder::initCodec()
     ffmpeg::avcodec_register_all();
     ffmpeg::av_register_all();
 
-   printf("License: %s\n",ffmpeg::avformat_license());
-   printf("AVCodec version %d\n",ffmpeg::avformat_version());
-   printf("AVFormat configuration: %s\n",ffmpeg::avformat_configuration());
+    private_log_callback("QtFFmpegWrapper version bullestock 1.0.0\n");
+    private_log_callback("License: %s\n", ffmpeg::avformat_license());
+    private_log_callback("AVCodec version %d\n", ffmpeg::avformat_version());
+    private_log_callback("AVFormat configuration: %s\n", ffmpeg::avformat_configuration());
 
    return true;
 }
@@ -326,7 +334,7 @@ bool QVideoEncoder::initCodec()
    custompts: true if a custom presentation time stamp  is used
    pts: presentation time stamp in milliseconds
 **/
-int QVideoEncoder::encodeImage_p(const QImage &img,bool custompts, unsigned pts)
+int QVideoEncoder::encodeImage_p(const QImage &img, bool custompts, unsigned pts)
 {
    if(!isOk())
       return -1;
@@ -344,7 +352,7 @@ int QVideoEncoder::encodeImage_p(const QImage &img,bool custompts, unsigned pts)
    int got_output;
    int out_size = ffmpeg::avcodec_encode_video2(pCodecCtx, &framepkt, ppicture, &got_output);
    out_size = framepkt.size;
-   //printf("Frame size: %d\n",out_size);
+   private_log_callback("PTS %u frame size: %d\n", pts, out_size);
 
 
    if(custompts)                             // Handle custom pts (must set it again for the rest of the processing)
@@ -361,13 +369,13 @@ int QVideoEncoder::encodeImage_p(const QImage &img,bool custompts, unsigned pts)
       if(pCodecCtx->coded_frame->key_frame)
          pkt.flags |= AV_PKT_FLAG_KEY;
 
-      //printf("c %d. pts %d. codedframepts: %ld pkt.pts: %ld\n",custompts,pts,pCodecCtx->coded_frame->pts,pkt.pts);
+      //private_log_callback("c %d. pts %d. codedframepts: %ld pkt.pts: %ld\n",custompts,pts,pCodecCtx->coded_frame->pts,pkt.pts);
 
       pkt.stream_index= pVideoStream->index;
       pkt.data= framepkt.data;
       pkt.size= out_size;
       int ret = av_interleaved_write_frame(pFormatCtx, &pkt);
-      //printf("Wrote %d\n",ret);
+      //private_log_callback("Wrote %d\n",ret);
       if(ret<0)
          return -1;
    }
@@ -467,12 +475,12 @@ bool QVideoEncoder::convertImage(const QImage &img)
    // Check if the image matches the size
    if(img.width()!=getWidth() || img.height()!=getHeight())
    {
-      printf("Wrong image size!\n");
+      private_log_callback("Wrong image size!\n");
       return false;
    }
    if(img.format()!=QImage::Format_RGB32	&& img.format() != QImage::Format_ARGB32)
    {
-      printf("Wrong image format\n");
+      private_log_callback("Wrong image format\n");
       return false;
    }
 
@@ -485,7 +493,7 @@ bool QVideoEncoder::convertImage(const QImage &img)
 
       unsigned char *s = (unsigned char*)img.scanLine(y);
       unsigned char *d = (unsigned char*)&picture_buf[y*getWidth()];
-      //printf("Line %d. d: %p. picture_buf: %p\n",y,d,picture_buf);
+      //private_log_callback("Line %d. d: %p. picture_buf: %p\n",y,d,picture_buf);
 
       for(unsigned x=0;x<getWidth();x++)
       {
@@ -510,7 +518,7 @@ bool QVideoEncoder::convertImage(const QImage &img)
       unsigned int ss = img.bytesPerLine();
       unsigned char *d = (unsigned char*)&picture_buf[size+y/2*getWidth()/2];
 
-      //printf("Line %d. d: %p. picture_buf: %p\n",y,d,picture_buf);
+      //private_log_callback("Line %d. d: %p. picture_buf: %p\n",y,d,picture_buf);
 
       for(unsigned x=0;x<getWidth();x+=2)
       {
@@ -561,12 +569,12 @@ bool QVideoEncoder::convertImage_sws(const QImage &img)
    // Check if the image matches the size
    if(img.width()!=getWidth() || img.height()!=getHeight())
    {
-      printf("Wrong image size!\n");
+      private_log_callback("Wrong image size!\n");
       return false;
    }
    if(img.format()!=QImage::Format_RGB32	&& img.format() != QImage::Format_ARGB32)
    {
-      printf("Wrong image format\n");
+      private_log_callback("Wrong image format\n");
       return false;
    }
 
@@ -575,7 +583,7 @@ bool QVideoEncoder::convertImage_sws(const QImage &img)
 						  ffmpeg::AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
    if (img_convert_ctx == NULL)
    {
-      printf("Cannot initialize the conversion context\n");
+      private_log_callback("Cannot initialize the conversion context\n");
       return false;
    }
 
