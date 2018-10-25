@@ -66,8 +66,6 @@ QVideoEncoder::~QVideoEncoder()
 bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height, unsigned bitrate, unsigned gop, unsigned fps, QString format,
                                QString* errorMessage)
 {
-   logBuffer.clear();
-   
    // If we had an open video, close it.
    close();
 
