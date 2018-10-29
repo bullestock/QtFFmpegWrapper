@@ -32,7 +32,7 @@ static void av_log_callback(void*, int, const char* format, va_list va)
 {
    if (av_log_callback_context)
    {
-      char buf[80];
+      char buf[1024];
       vsnprintf(buf, sizeof(buf), format, va);
       av_log_callback_context->log(buf);
    }
