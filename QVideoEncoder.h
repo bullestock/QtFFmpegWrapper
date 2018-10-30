@@ -32,19 +32,19 @@ class QVideoEncoder
       bool ok;
 
       // FFmpeg stuff
-      ffmpeg::AVFormatContext *pFormatCtx;
-      ffmpeg::AVOutputFormat *pOutputFormat;
-      ffmpeg::AVCodecContext *pCodecCtx;
-      ffmpeg::AVStream *pVideoStream;
-      ffmpeg::AVCodec *pCodec;
+      ffmpeg::AVFormatContext* pFormatCtx = nullptr;
+      ffmpeg::AVOutputFormat* pOutputFormat = nullptr;
+      ffmpeg::AVCodecContext* pCodecCtx = nullptr;
+      ffmpeg::AVStream* pVideoStream = nullptr;
+      ffmpeg::AVCodec* pCodec = nullptr;
       // Frame data
-      ffmpeg::AVFrame *ppicture;
-      uint8_t *picture_buf;
+      ffmpeg::AVFrame* av_frame = nullptr;
+      uint8_t* picture_buf = nullptr;
       // Compressed data
       int outbuf_size;
-      uint8_t* outbuf;
+      uint8_t* outbuf = nullptr;
       // Conversion
-      ffmpeg::SwsContext *img_convert_ctx;
+      ffmpeg::SwsContext* img_convert_ctx = nullptr;
       // Packet
       ffmpeg::AVPacket pkt;
 
@@ -52,8 +52,8 @@ class QVideoEncoder
 
       QString logBuffer;
 
-      unsigned getWidth();
-      unsigned getHeight();
+      unsigned getWidth() const;
+      unsigned getHeight() const;
 
       void initVars();
       bool initCodec();
@@ -84,14 +84,11 @@ class QVideoEncoder
 
       virtual int encodeImage(const QImage &);
       virtual int encodeImagePts(const QImage &,unsigned pts);
-      virtual bool isOk();  
+      virtual bool isOk() const;
 
       void log(const char*);
 
       QString log() const;
 };
-
-
-
 
 #endif // QVideoEncoder_H
