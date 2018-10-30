@@ -133,7 +133,7 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
    if (pCodecCtx->codec_id == ffmpeg::AV_CODEC_ID_H264)
    {
       // Set H.264 defaults
-      ffmpeg::av_log(NULL, AV_LOG_INFO, "Setting H.264 defaults");
+      ffmpeg::av_log(NULL, AV_LOG_INFO, "Setting H.264 defaults\n");
       pCodecCtx->me_range = 16;
       pCodecCtx->max_qdiff = 4;
       pCodecCtx->qmin = 10;
