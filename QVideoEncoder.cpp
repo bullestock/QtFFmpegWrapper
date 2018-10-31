@@ -116,6 +116,10 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
 
    pCodecCtx = pVideoStream->codec;
    pCodecCtx->codec_id = pOutputFormat->video_codec;
+   // I cannot get satisfying results with any of the H.264 settings I've tried, so use plain MPEG-4 instead.
+   if (pCodecCtx->codec_id == ffmpeg::AV_CODEC_ID_H264)
+      pCodecCtx->codec_id = ffmpeg::AV_CODEC_ID_MPEG4;
+
    pCodecCtx->codec_type = ffmpeg::AVMEDIA_TYPE_VIDEO;
 
    pCodecCtx->bit_rate = Bitrate;
@@ -130,21 +134,9 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
    pCodecCtx->pix_fmt = ffmpeg::PIX_FMT_YUV420P;
    pCodecCtx->thread_count = 10;
 
-   if (pCodecCtx->codec_id == ffmpeg::AV_CODEC_ID_H264)
-   {
-      // Set H.264 defaults
-      ffmpeg::av_log(NULL, AV_LOG_INFO, "Setting H.264 defaults\n");
-      pCodecCtx->me_range = 16;
-      pCodecCtx->max_qdiff = 4;
-      pCodecCtx->qmin = 10;
-      pCodecCtx->qmax = 51;
-      pCodecCtx->qcompress = (float) 0.6;
-   }
-   
    // some formats want stream headers to be separate
    if (pFormatCtx->oformat->flags & AVFMT_GLOBALHEADER)
       pCodecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
-
 
    ffmpeg::av_dump_format(pFormatCtx, 0, fileName.toStdString().c_str(), 1);
 
@@ -164,7 +156,7 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
       return false;
    }
    // open the codec
-   if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0)
+   if (avcodec_open2(pCodecCtx, pCodec, nullptr) < 0)
    {
       if (errorMessage)
       {
