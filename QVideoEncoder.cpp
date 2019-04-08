@@ -311,7 +311,7 @@ bool QVideoEncoder::initCodec()
     ffmpeg::avcodec_register_all();
     ffmpeg::av_register_all();
 
-    private_log_callback("QtFFmpegWrapper version bullestock 1.0.0\n");
+    private_log_callback("QtFFmpegWrapper version bullestock 1.5.0\n");
     private_log_callback("License: %s\n", ffmpeg::avformat_license());
     private_log_callback("AVCodec version %d\n", ffmpeg::avformat_version());
     private_log_callback("AVFormat configuration: %s\n", ffmpeg::avformat_configuration());
