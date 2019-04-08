@@ -436,6 +436,9 @@ bool QVideoEncoder::initFrame()
 
    // Setup the planes
    avpicture_fill((ffmpeg::AVPicture *)ppicture, picture_buf,pCodecCtx->pix_fmt, pCodecCtx->width, pCodecCtx->height);
+   ppicture->format = pCodecCtx->pix_fmt;
+   ppicture->width = pCodecCtx->width;
+   ppicture->height = pCodecCtx->height;
 
    return true;
 }
