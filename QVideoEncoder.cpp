@@ -136,7 +136,7 @@ bool QVideoEncoder::createFile(QString fileName, unsigned width, unsigned height
 
    // some formats want stream headers to be separate
    if (pFormatCtx->oformat->flags & AVFMT_GLOBALHEADER)
-      pCodecCtx->flags |= CODEC_FLAG_GLOBAL_HEADER;
+      pCodecCtx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
    ffmpeg::av_dump_format(pFormatCtx, 0, fileName.toStdString().c_str(), 1);
 
